@@ -29,7 +29,14 @@
         #
         # Use this shell for developing your app.
         devShells.default = pkgs.mkShell {
+          shellHook = ''
+            export CUDA_PATH=${pkgs.cudaPackages.cudatoolkit}
+            export LD_LIBRARY_PATH=${pkgs.cudaPackages.cuda_nvrtc}/lib
+            export EXTRA_LDFLAGS="-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib"
+            export EXTRA_CCFLAGS="-I/usr/include"
+          '';
           packages = with pkgs; [
+            libtorch-bin
             cudaPackages.cuda_nvrtc
             python311Packages.torch-bin
             python311Packages.torchaudio-bin
@@ -46,6 +53,7 @@
               version = "3.0.0";
               doCheck = false;
               buildInputs = [
+                libtorch-bin
                 cudaPackages.cuda_nvrtc
                 python311Packages.torch-bin
                 python311Packages.torchaudio-bin
@@ -63,6 +71,7 @@
                   pname = "transformers";
                   version = "4.31.0";
                   buildInputs = [
+                    libtorch-bin
                     cudaPackages.cuda_nvrtc
                     python311Packages.torch-bin
                     python311Packages.torchaudio-bin
@@ -83,7 +92,17 @@
               };
             })
           ];
+          nativeBuildInputs = [
+            pkgs.libtorch-bin
+            pkgs.python311Packages.torch-bin
+            pkgs.python311Packages.torchaudio-bin
+            pkgs.cudaPackages.cuda_nvrtc
+
+          ];
           inputsFrom = [ 
+            pkgs.python311
+            pkgs.python311Packages.pip
+            pkgs.libtorch-bin
             pkgs.python311Packages.torch-bin
             pkgs.python311Packages.torchaudio-bin
             pkgs.cudaPackages.cuda_nvrtc

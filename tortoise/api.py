@@ -285,7 +285,7 @@ class TextToSpeech:
                 sample = torchaudio.functional.resample(sample, 22050, 24000)
                 sample = pad_or_truncate(sample, 102400)
                 cond_mel = wav_to_univnet_mel(sample.to(self.device), do_normalization=False,
-                                              device=self.device, stft=self.stft)
+                                              device=self.device)#, stft=self.stft)
                 diffusion_conds.append(cond_mel)
             diffusion_conds = torch.stack(diffusion_conds, dim=1)
 
