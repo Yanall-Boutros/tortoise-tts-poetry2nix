@@ -31,7 +31,7 @@
         devShells.default = pkgs.mkShell {
           shellHook = ''
             export CUDA_PATH=${pkgs.cudaPackages.cudatoolkit}
-            export LD_LIBRARY_PATH=${pkgs.cudaPackages.cuda_nvrtc}/lib:${pkgs.cudaPackages.cudnn}/lib:/nix/store/*cudnn*/lib:
+            export LD_LIBRARY_PATH=${pkgs.cudaPackages.cuda_nvrtc}/lib
             export EXTRA_LDFLAGS="-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib"
             export EXTRA_CCFLAGS="-I/usr/include"
           '';
