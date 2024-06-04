@@ -31,13 +31,14 @@
         devShells.default = pkgs.mkShell {
           shellHook = ''
             export CUDA_PATH=${pkgs.cudaPackages.cudatoolkit}
-            export LD_LIBRARY_PATH=${pkgs.cudaPackages.cuda_nvrtc}/lib
+            export LD_LIBRARY_PATH=${pkgs.cudaPackages.cuda_nvrtc}/lib:${pkgs.cudaPackages.cudnn}/lib:/nix/store/*cudnn*/lib:
             export EXTRA_LDFLAGS="-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib"
             export EXTRA_CCFLAGS="-I/usr/include"
           '';
           packages = with pkgs; [
             libtorch-bin
             cudaPackages.cuda_nvrtc
+            cudaPackages.cudnn
             python311Packages.torch-bin
             python311Packages.torchaudio-bin
             python311Packages.progressbar
@@ -53,10 +54,6 @@
               version = "3.0.0";
               doCheck = false;
               buildInputs = [
-                libtorch-bin
-                cudaPackages.cuda_nvrtc
-                python311Packages.torch-bin
-                python311Packages.torchaudio-bin
                 python311Packages.pip
                 python311Packages.tokenizers
                 python311Packages.librosa
@@ -71,10 +68,6 @@
                   pname = "transformers";
                   version = "4.31.0";
                   buildInputs = [
-                    libtorch-bin
-                    cudaPackages.cuda_nvrtc
-                    python311Packages.torch-bin
-                    python311Packages.torchaudio-bin
                     python311Packages.tokenizers # Version might be wrong
                     python311Packages.pip
                     python311Packages.tqdm
@@ -92,19 +85,13 @@
               };
             })
           ];
-          nativeBuildInputs = [
-            pkgs.libtorch-bin
-            pkgs.python311Packages.torch-bin
-            pkgs.python311Packages.torchaudio-bin
-            pkgs.cudaPackages.cuda_nvrtc
-
-          ];
           inputsFrom = [ 
             pkgs.python311
             pkgs.python311Packages.pip
             pkgs.libtorch-bin
             pkgs.python311Packages.torch-bin
             pkgs.python311Packages.torchaudio-bin
+            pkgs.cudaPackages.cudnn
             pkgs.cudaPackages.cuda_nvrtc
             pkgs.cudaPackages.libcusparse
             self.packages.${system}.myapp
