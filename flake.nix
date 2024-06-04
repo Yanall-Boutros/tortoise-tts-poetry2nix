@@ -30,6 +30,7 @@
         # Use this shell for developing your app.
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            cudaPackages.cuda_nvrtc
             python311Packages.torch-bin
             python311Packages.torchaudio-bin
             python311Packages.progressbar
@@ -45,6 +46,9 @@
               version = "3.0.0";
               doCheck = false;
               buildInputs = [
+                cudaPackages.cuda_nvrtc
+                python311Packages.torch-bin
+                python311Packages.torchaudio-bin
                 python311Packages.pip
                 python311Packages.tokenizers
                 python311Packages.librosa
@@ -59,6 +63,9 @@
                   pname = "transformers";
                   version = "4.31.0";
                   buildInputs = [
+                    cudaPackages.cuda_nvrtc
+                    python311Packages.torch-bin
+                    python311Packages.torchaudio-bin
                     python311Packages.tokenizers # Version might be wrong
                     python311Packages.pip
                     python311Packages.tqdm
@@ -77,6 +84,9 @@
             })
           ];
           inputsFrom = [ 
+            pkgs.python311Packages.torch-bin
+            pkgs.python311Packages.torchaudio-bin
+            pkgs.cudaPackages.cuda_nvrtc
             pkgs.cudaPackages.libcusparse
             self.packages.${system}.myapp
           ];
