@@ -14,15 +14,9 @@ A live demo is hosted on Hugging Face Spaces. If you'd like to avoid a queue, pl
 
 https://huggingface.co/spaces/Manmay/tortoise-tts
 
-## Install via pip
+## Install via Nix
 ```bash
-pip install tortoise-tts
-```
-
-If you would like to install the latest development version, you can also install it directly from the git repository:
-
-```bash
-pip install git+https://github.com/neonbjb/tortoise-tts
+nix develop --impure .
 ```
 
 ## What's in a name?
@@ -42,92 +36,8 @@ A cool application of Tortoise + GPT-3 (not affiliated with this repository): ht
 ## Usage guide
 
 ### Local installation
-
+This flake was built with NixOS. If the flake.nix and flake.lock are in the tortoise-tts github repo, running `enter_nix_development_shell.sh` should set everything up
 If you want to use this on your own computer, you must have an NVIDIA GPU.
-
-On Windows, I **highly** recommend using the Conda installation method. I have been told that if you do not do this, you
-will spend a lot of time chasing dependency problems.
-
-First, install miniconda: https://docs.conda.io/en/latest/miniconda.html
-
-Then run the following commands, using anaconda prompt as the terminal (or any other terminal configured to work with conda)
-
-This will:
-1. create conda environment with minimal dependencies specified
-1. activate the environment
-1. install pytorch with the command provided here: https://pytorch.org/get-started/locally/
-1. clone tortoise-tts
-1. change the current directory to tortoise-tts
-1. run tortoise python setup install script
-
-```shell
-conda create --name tortoise python=3.9 numba inflect
-conda activate tortoise
-conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
-conda install transformers=4.29.2
-git clone https://github.com/neonbjb/tortoise-tts.git
-cd tortoise-tts
-python setup.py install
-```
-
-Optionally, pytorch can be installed in the base environment, so that other conda environments can use it too. To do this, simply send the `conda install pytorch...` line before activating the tortoise environment.
-
-> **Note:** When you want to use tortoise-tts, you will always have to ensure the `tortoise` conda environment is activated.
-
-If you are on windows, you may also need to install pysoundfile: `conda install -c conda-forge pysoundfile`
-
-### Docker
-
-An easy way to hit the ground running and a good jumping off point depending on your use case.
-
-```sh
-git clone https://github.com/neonbjb/tortoise-tts.git
-cd tortoise-tts
-
-docker build . -t tts
-
-docker run --gpus all \
-    -e TORTOISE_MODELS_DIR=/models \
-    -v /mnt/user/data/tortoise_tts/models:/models \
-    -v /mnt/user/data/tortoise_tts/results:/results \
-    -v /mnt/user/data/.cache/huggingface:/root/.cache/huggingface \
-    -v /root:/work \
-    -it tts
-```
-This gives you an interactive terminal in an environment that's ready to do some tts. Now you can explore the different interfaces that tortoise exposes for tts.
-
-For example:
-
-```sh
-cd app
-conda activate tortoise
-time python tortoise/do_tts.py \
-    --output_path /results \
-    --preset ultra_fast \
-    --voice geralt \
-    --text "Time flies like an arrow; fruit flies like a bananna."
-```
-
-## Apple Silicon
-
-On macOS 13+ with M1/M2 chips you need to install the nighly version of PyTorch, as stated in the official page you can do:
-
-```shell
-pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
-```
-
-Be sure to do that after you activate the environment. If you don't use conda the commands would look like this:
-
-```shell
-python3.10 -m venv .venv
-source .venv/bin/activate
-pip install numba inflect psutil
-pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
-pip install transformers
-git clone https://github.com/neonbjb/tortoise-tts.git
-cd tortoise-tts
-pip install .
-```
 
 Be aware that DeepSpeed is disabled on Apple Silicon since it does not work. The flag `--use_deepspeed` is ignored.
 You may need to prepend `PYTORCH_ENABLE_MPS_FALLBACK=1` to the commands below to make them work since MPS does not support all the operations in Pytorch.
